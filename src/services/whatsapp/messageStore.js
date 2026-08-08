@@ -1,0 +1,22 @@
+const Conversation = require('../../models/Conversation');
+const Message = require('../../models/Message');
+
+/** Persists an outbound message record — called after a successful Unipile send. */
+async function recordOutboundMessage({ conversationId, leadId, text, sender, whatsappMessageId, aiPrompt, aiResponseRaw, intent, sentiment }) {
+  const message = await Message.create({
+    conversationId,
+    leadId,
+    direction: 'outbound',
+    sender,
+    text,
+    whatsappMessageId: whatsappMessageId || null,
+    aiPrompt: aiPrompt || null,
+    aiResponseRaw: aiResponseRaw || null,
+    intent: intent || null,
+    sentiment: sentiment || null,
+  });
+  await Conversation.updateOne({ _id: conversationId }, { $set: { lastMessageAt: message.timestamp } });
+  return message;
+}
+
+module.exports = { recordOutboundMessage };
