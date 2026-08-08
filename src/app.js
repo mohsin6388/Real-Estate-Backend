@@ -25,7 +25,7 @@ app.use(helmet());
 app.use(
   cors({
    // origin: "https://whatsapp-agent-gdxx.onrender.com", // exact frontend URL
-    origin: "http://localhost:5173",
+    origin: "https://real-estate-agent-17dl.onrender.com",
     credentials: true,
   })
 );
