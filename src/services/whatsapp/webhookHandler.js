@@ -529,15 +529,61 @@ async function handleWebhook(payload) {
       // see note below on the DB-level unique index this still needs)
     }
 
-    const savedMessage = await Message.create({
-      conversationId: conversation._id,
-      leadId: lead._id,
-      direction: 'inbound',
-      sender: 'customer',
-      text,
-      whatsappMessageId: whatsappMessageId || null,
-      timestamp: payload.timestamp ? new Date(payload.timestamp) : new Date(),
-    });
+    //=======Yha se remove krna hai 
+
+    logger.info('[whatsapp] ABOUT TO SAVE INBOUND MESSAGE', {
+  conversationId: conversation?._id?.toString(),
+  leadId: lead?._id?.toString(),
+  phone,
+  text,
+  whatsappMessageId,
+  timestamp: payload.timestamp,
+});
+
+let savedMessage;
+
+try {
+  savedMessage = await Message.create({
+    conversationId: conversation._id,
+    leadId: lead._id,
+    direction: 'inbound',
+    sender: 'customer',
+    text,
+    whatsappMessageId: whatsappMessageId || null,
+    timestamp: payload.timestamp ? new Date(payload.timestamp) : new Date(),
+  });
+
+  logger.info('[whatsapp] INBOUND MESSAGE SAVED SUCCESSFULLY', {
+    messageId: savedMessage._id.toString(),
+    conversationId: savedMessage.conversationId.toString(),
+    leadId: savedMessage.leadId.toString(),
+    text: savedMessage.text,
+  });
+} catch (saveErr) {
+  logger.error('[whatsapp] FAILED TO SAVE INBOUND MESSAGE', {
+    error: saveErr.message,
+    name: saveErr.name,
+    code: saveErr.code,
+    stack: saveErr.stack,
+    conversationId: conversation?._id?.toString(),
+    leadId: lead?._id?.toString(),
+    phone,
+    text,
+    whatsappMessageId,
+  });
+
+  throw saveErr;
+}
+
+    // const savedMessage = await Message.create({
+    //   conversationId: conversation._id,
+    //   leadId: lead._id,
+    //   direction: 'inbound',
+    //   sender: 'customer',
+    //   text,
+    //   whatsappMessageId: whatsappMessageId || null,
+    //   timestamp: payload.timestamp ? new Date(payload.timestamp) : new Date(),
+    // });
 
     conversation.lastMessageAt = savedMessage.timestamp;
     conversation.unreadCount += 1;
