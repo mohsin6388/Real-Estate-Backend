@@ -1794,15 +1794,44 @@ function toGeminiHistory(messages) {
 /**
  * First outbound message.
  */
-function buildOpeningHistory() {
+
+function buildOpeningHistory(buyerName) {
   return [
     {
       role: 'user',
-      text:
-        'This is the very first WhatsApp message. Introduce yourself as a representative of the company (without using any personal name) and ONLY ask which language the buyer prefers: English or Hinglish. Do not ask any property-related questions yet. Keep the message friendly, short and WhatsApp-style.',
+      text: `This is the very first WhatsApp message to the buyer.
+
+Buyer name: ${lead.name}
+
+Generate the first WhatsApp message.
+
+Requirements:
+- Greet the buyer naturally using their name.
+- Introduce yourself as a representative of the company without using any personal name.
+- Mention that the buyer had made a property-related query.
+- Ask which language they prefer: English or Hinglish.
+- Do not ask any property-related questions yet.
+- Keep it short, friendly, natural and human-like.
+- Use WhatsApp-style language.
+- If the buyer's name is available, use it naturally.
+- Do not invent any information.
+
+Example style:
+"Hi Mohsin, kaise hain? Aapne property regarding query ki thi. Aap kis language mein baat karna pasand karenge, English ya Hinglish?"`,
     },
   ];
 }
+
+
+// function buildOpeningHistory() {
+//   return [
+//     {
+//       role: 'user',
+//       text:
+//         'This is the very first WhatsApp message. Introduce yourself as a representative of the company (without using any personal name) and ONLY ask which language the buyer prefers: English or Hinglish. Do not ask any property-related questions yet. Keep the message friendly, short and WhatsApp-style.',
+//     },
+//   ];
+// }
 
 module.exports = {
   buildSystemInstruction,
